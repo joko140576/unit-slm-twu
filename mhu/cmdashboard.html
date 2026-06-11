@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard CM — MHU/MSUK Hitachi</title>
+<style>
+:root{
+  --blue:#0055CC;--blue-dk:#003D99;--blue-lt:#EFF5FF;
+  --ink:#1A1A2E;--ink2:#4A4A5A;--ink3:#8A8A9A;
+  --bg:#F0F2F5;--white:#fff;--border:#D8DAE0;
+  --green:#28A745;--orange:#FD7E14;--red:#DC3545;
+  --font:'Segoe UI',system-ui,sans-serif;
+  --radius:10px;--shadow:0 2px 12px rgba(0,0,0,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);min-height:100vh}
+
+.hdr{
+  background:linear-gradient(120deg,#0A0A20 0%,#0D1A3A 60%,#0A1A30 100%);
+  border-bottom:3px solid var(--blue);padding:0 24px;
+  position:sticky;top:0;z-index:200;box-shadow:0 3px 20px rgba(0,0,0,.35);
+}
+.hdr-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:14px 0}
+.logo{background:var(--blue);color:#fff;font-weight:900;font-size:19px;letter-spacing:3px;padding:7px 14px;border-radius:6px;flex-shrink:0}
+.hdr-text h1{color:#fff;font-size:16px;font-weight:700}
+.hdr-text p{color:rgba(255,255,255,.5);font-size:11px;margin-top:2px}
+.hdr-pill{margin-left:auto;flex-shrink:0;background:rgba(0,85,204,.3);border:1px solid rgba(0,85,204,.6);color:#90C0FF;font-size:10px;font-weight:800;letter-spacing:1.5px;padding:5px 12px;border-radius:20px;text-transform:uppercase}
+
+.wrap{max-width:1200px;margin:0 auto;padding:24px 20px 48px}
+
+.cfg-status-bar{
+  background:linear-gradient(135deg,#0a0a20,#0d1a3a);
+  border:2px solid var(--blue);border-radius:var(--radius);
+  padding:12px 22px;margin-bottom:24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+}
+.cfg-status{color:#90FF90;font-size:11px;font-weight:700}
+
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.kpi{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;border-left:4px solid var(--border);transition:transform .15s}
+.kpi:hover{transform:translateY(-2px)}
+.kpi-lbl{font-size:10px;font-weight:800;color:var(--ink3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.kpi-val{font-size:32px;font-weight:900;line-height:1}
+.kpi-sub{font-size:11px;color:var(--ink3);margin-top:6px}
+
+.card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px}
+.card-hd{background:linear-gradient(120deg,var(--blue),var(--blue-dk));color:#fff;padding:14px 22px;display:flex;align-items:center;gap:10px}
+.card-hd h2{font-size:13px;font-weight:700;letter-spacing:.6px;flex:1}
+
+.charts-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px}
+.chart-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.chart-hd{padding:14px 18px;font-size:12px;font-weight:800;color:var(--ink2);border-bottom:1px solid var(--border)}
+.chart-bd{padding:16px}
+.bar-item{margin-bottom:12px}
+.bar-lbl{display:flex;justify-content:space-between;font-size:11px;font-weight:600;margin-bottom:4px}
+.bar-track{height:10px;background:#F0F2F5;border-radius:5px;overflow:hidden}
+.bar-fill{height:100%;border-radius:5px;transition:width .5s}
+
+.filters{display:flex;gap:10px;padding:16px 22px;border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center}
+.filters input,.filters select{padding:8px 12px;border:2px solid var(--border);border-radius:7px;font-size:12px;color:var(--ink);background:#fff;font-family:var(--font)}
+.filters input:focus,.filters select:focus{outline:none;border-color:var(--blue)}
+.filter-lbl{font-size:11px;font-weight:700;color:var(--ink3);white-space:nowrap}
+.btn-exp{padding:8px 16px;background:var(--green);color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer}
+
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#f8f8f8;padding:10px 12px;text-align:left;font-size:10px;font-weight:800;color:var(--ink3);text-transform:uppercase;letter-spacing:.6px;border-bottom:2px solid var(--border);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#f5f8ff}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:800}
+.badge-ok{background:#C6EFCE;color:#276221}
+.badge-err{background:#FFC7CE;color:#9C0006}
+.badge-warn{background:#FFEB9C;color:#9C6500}
+.dt-over{color:#DC3545;font-weight:800}
+.foto-link{color:var(--blue);text-decoration:none;font-weight:700;font-size:11px}
+.foto-link:hover{text-decoration:underline}
+.no-data{text-align:center;padding:48px;color:var(--ink3);font-size:13px}
+
+.pagination{display:flex;gap:6px;justify-content:flex-end;padding:14px 22px;border-top:1px solid var(--border);align-items:center}
+.pagination span{font-size:12px;color:var(--ink3)}
+.pg-btn{padding:6px 12px;border:2px solid var(--border);border-radius:6px;background:#fff;font-size:12px;font-weight:700;cursor:pointer;color:var(--ink2)}
+.pg-btn:hover{border-color:var(--blue);color:var(--blue)}
+.pg-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+@media(max-width:900px){.kpi-row{grid-template-columns:1fr 1fr}.charts-row{grid-template-columns:1fr}}
+@media(max-width:600px){.kpi-row{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-inner">
+    <div class="logo">HITACHI</div>
+    <div class="hdr-text">
+      <h1>Dashboard Corrective Maintenance — MHU/MSUK Hitachi</h1>
+      <p>Monitoring Tiket CM · Downtime · Sparepart · Real-time dari Google Spreadsheet</p>
+    </div>
+    <div class="hdr-pill">🔧 CM DASHBOARD</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- STATUS BAR -->
+  <div class="cfg-status-bar">
+    <span style="color:#90C0FF;font-size:11px;font-weight:800;letter-spacing:.8px">📡 DATA SOURCE: Google Apps Script CM</span>
+    <span class="cfg-status" id="cfgStatus">⏳ Menghubungkan...</span>
+    <a id="sheetLink" href="#" target="_blank" style="display:none;padding:7px 16px;background:#003D99;color:#fff;border-radius:7px;font-size:12px;font-weight:800;text-decoration:none;margin-left:auto">📊 Buka Spreadsheet</a>
+  </div>
+
+  <!-- KPI -->
+  <div class="kpi-row">
+    <div class="kpi" style="border-color:var(--blue)">
+      <div class="kpi-lbl">Total Tiket CM</div>
+      <div class="kpi-val" id="kTotal" style="color:var(--blue)">—</div>
+      <div class="kpi-sub">Semua tiket</div>
+    </div>
+    <div class="kpi" style="border-color:var(--red)">
+      <div class="kpi-lbl">Avg Downtime</div>
+      <div class="kpi-val" id="kAvgDt" style="color:var(--red)">—</div>
+      <div class="kpi-sub">jam rata-rata</div>
+    </div>
+    <div class="kpi" style="border-color:var(--orange)">
+      <div class="kpi-lbl">Pakai Sparepart</div>
+      <div class="kpi-val" id="kPart" style="color:var(--orange)">—</div>
+      <div class="kpi-sub">tiket menggunakan part</div>
+    </div>
+    <div class="kpi" style="border-color:var(--red)">
+      <div class="kpi-lbl">SLA Breach &gt;8 jam</div>
+      <div class="kpi-val" id="kSla" style="color:var(--red)">—</div>
+      <div class="kpi-sub">melebihi SLA</div>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-hd">📍 Top Wilayah</div>
+      <div class="chart-bd" id="chartWilayah"><p style="color:var(--ink3);font-size:12px">Belum ada data</p></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-hd">🔧 Top Tipe Mesin</div>
+      <div class="chart-bd" id="chartTipe"><p style="color:var(--ink3);font-size:12px">Belum ada data</p></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-hd">⚠️ Top Jenis Problem</div>
+      <div class="chart-bd" id="chartProblem"><p style="color:var(--ink3);font-size:12px">Belum ada data</p></div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="card">
+    <div class="card-hd">
+      <h2>📋 Data Tiket CM MHU/MSUK Hitachi</h2>
+      <button class="btn-exp" onclick="exportCSV()">⬇ Export CSV</button>
+    </div>
+    <div class="filters">
+      <span class="filter-lbl">Filter:</span>
+      <input type="text" id="fSearch" placeholder="Cari tiket / SN / Teknisi..." oninput="applyFilter()" style="min-width:200px">
+      <select id="fPart" onchange="applyFilter()">
+        <option value="">Semua Sparepart</option>
+        <option value="Ya">Pakai Sparepart</option>
+        <option value="Tidak">Tanpa Sparepart</option>
+      </select>
+      <select id="fWilayah" onchange="applyFilter()">
+        <option value="">Semua Wilayah</option>
+        <option>Sumatera</option><option>Jawa</option><option>Kalimantan</option>
+        <option>Sulawesi</option><option>Bali Nusra</option><option>Papua</option>
+      </select>
+      <select id="fSla" onchange="applyFilter()">
+        <option value="">Semua SLA</option>
+        <option value="breach">SLA Breach (&gt;8 jam)</option>
+        <option value="ok">SLA OK (≤8 jam)</option>
+      </select>
+      <input type="date" id="fDateFrom" onchange="applyFilter()" title="Open tiket dari tanggal">
+      <input type="date" id="fDateTo"   onchange="applyFilter()" title="Open tiket sampai tanggal">
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Timestamp</th>
+            <th>No Tiket</th>
+            <th>Pelanggan</th>
+            <th>Cabang</th>
+            <th>Wilayah</th>
+            <th>Kota</th>
+            <th>Tipe</th>
+            <th>SN Mesin</th>
+            <th>Teknisi</th>
+            <th>PIC</th>
+            <th>Problem</th>
+            <th>Open</th>
+            <th>Solved</th>
+            <th>Downtime</th>
+            <th>Sparepart</th>
+            <th>Nama Part</th>
+            <th>Qty</th>
+            <th>Foto SN</th>
+          </tr>
+        </thead>
+        <tbody id="tblBody">
+          <tr><td colspan="19" class="no-data">⬆ Masukkan GAS URL dan klik Load Data</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pagination" id="paginationBar"></div>
+  </div>
+
+</div>
+
+<script>
+const GAS_URL_DEFAULT = 'https://script.google.com/macros/s/AKfycbxNibM5K_F2bqu200hNnCVrCE4fCUREV4nUyrMlsU4eOmDdAYlEdL7NPgtVweG1hLLZqg/exec';
+
+let allData=[], filtered=[], curPage=1;
+const PER_PAGE=25;
+
+window.addEventListener('load',()=>{
+  loadData();
+});
+
+async function loadData(){
+  const url=GAS_URL_DEFAULT;
+  document.getElementById('cfgStatus').textContent='⏳ Loading...';
+  document.getElementById('tblBody').innerHTML='<tr><td colspan="19" style="text-align:center;padding:48px;color:var(--ink3)">⏳ Memuat data...</td></tr>';
+
+  try{
+    const res=await fetch(url+'?action=getData&_='+Date.now());
+    const data=await res.json();
+    if(data.ok&&data.rows){
+      allData=data.rows;
+      document.getElementById('cfgStatus').textContent='✅ '+allData.length+' tiket';
+      if(data.spreadsheet){
+        const sl=document.getElementById('sheetLink');
+        sl.href=data.spreadsheet;sl.style.display='inline-block';
+      }
+      updateKPI();updateCharts();applyFilter();
+    } else {
+      document.getElementById('cfgStatus').textContent='⚠️ Format tidak dikenal';
+      showNoData();
+    }
+  }catch(err){
+    document.getElementById('cfgStatus').textContent='⚠️ CORS — lihat panduan';
+    document.getElementById('tblBody').innerHTML=`
+      <tr><td colspan="19" style="padding:32px;text-align:center">
+        <div style="font-size:14px;font-weight:700;color:#0055CC;margin-bottom:12px">⚠️ Dashboard tidak bisa membaca data langsung dari GAS (CORS)</div>
+        <div style="font-size:12px;color:var(--ink3);line-height:1.8;max-width:560px;margin:0 auto">
+          <b>Solusi 1:</b> Tambahkan handler <code>action=getData</code> di GAS CM (lihat panduan update GAS)<br>
+          <b>Solusi 2:</b> Klik tombol <b>Buka Spreadsheet</b> di atas untuk melihat data langsung<br>
+          <b>Solusi 3:</b> Hubungkan ke Google Looker Studio untuk dashboard visual otomatis
+        </div>
+      </td></tr>`;
+  }
+}
+
+function showNoData(){
+  document.getElementById('tblBody').innerHTML='<tr><td colspan="19" class="no-data">Tidak ada data ditemukan</td></tr>';
+}
+
+function updateKPI(){
+  document.getElementById('kTotal').textContent=allData.length;
+  const dts=allData.map(r=>parseFloat(r[14])||0);
+  const avg=dts.length?dts.reduce((a,b)=>a+b,0)/dts.length:0;
+  document.getElementById('kAvgDt').textContent=avg.toFixed(1);
+  document.getElementById('kPart').textContent=allData.filter(r=>r[15]==='Ya').length;
+  document.getElementById('kSla').textContent=dts.filter(v=>v>8).length;
+}
+
+function updateCharts(){
+  const wMap={},tMap={},pMap={};
+  allData.forEach(r=>{
+    const w=r[5]||'?'; wMap[w]=(wMap[w]||0)+1;
+    const t=r[7]||'?'; tMap[t]=(tMap[t]||0)+1;
+    // Jenis problem — ambil 3 kata pertama
+    const p=(r[11]||'?').split(' ').slice(0,3).join(' ')+'...';
+    pMap[p]=(pMap[p]||0)+1;
+  });
+  renderBar('chartWilayah',wMap,'#0055CC');
+  renderBar('chartTipe',tMap,'#CC0000');
+  renderBar('chartProblem',pMap,'#FD7E14');
+}
+
+function renderBar(elId,map,color){
+  const el=document.getElementById(elId);
+  const sorted=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const max=sorted[0]?sorted[0][1]:1;
+  el.innerHTML=sorted.map(([k,v])=>`
+    <div class="bar-item">
+      <div class="bar-lbl"><span style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${k}</span><span>${v}</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/max*100)}%;background:${color}"></div></div>
+    </div>`).join('')||'<p style="color:var(--ink3);font-size:12px">Belum ada data</p>';
+}
+
+function applyFilter(){
+  const q=(document.getElementById('fSearch').value||'').toLowerCase();
+  const pt=document.getElementById('fPart').value;
+  const wl=document.getElementById('fWilayah').value;
+  const sl=document.getElementById('fSla').value;
+  const df=document.getElementById('fDateFrom').value;
+  const dt=document.getElementById('fDateTo').value;
+
+  filtered=allData.filter(r=>{
+    const row=r.map(v=>(v||'').toString());
+    if(q&&!row.some(v=>v.toLowerCase().includes(q)))return false;
+    if(pt&&row[15]!==pt)return false;
+    if(wl&&row[5]!==wl)return false;
+    const dtHour=parseFloat(row[14])||0;
+    if(sl==='breach'&&dtHour<=8)return false;
+    if(sl==='ok'&&dtHour>8)return false;
+    const openDate=row[12]?row[12].substring(0,10):'';
+    if(df&&openDate&&openDate<df)return false;
+    if(dt&&openDate&&openDate>dt)return false;
+    return true;
+  });
+  curPage=1;renderTable();
+}
+
+function renderTable(){
+  const start=(curPage-1)*PER_PAGE;
+  const page=filtered.slice(start,start+PER_PAGE);
+  if(!page.length){showNoData();renderPagination();return;}
+
+  const fotoLink=(url,lbl)=>url&&url.startsWith('http')
+    ?`<a href="${url}" target="_blank" class="foto-link">📎 ${lbl}</a>`
+    :'<span style="color:var(--ink3)">—</span>';
+
+  const partBadge=(v)=>{
+    if(v==='Ya') return`<span class="badge badge-warn">🔩 Ya</span>`;
+    if(v==='Tidak')return`<span class="badge badge-ok">✅ Tidak</span>`;
+    return v||'—';
+  };
+
+  document.getElementById('tblBody').innerHTML=page.map((r,i)=>{
+    const dt=parseFloat(r[14])||0;
+    const dtClass=dt>8?'dt-over':'';
+    return`<tr>
+      <td style="color:var(--ink3)">${start+i+1}</td>
+      <td style="white-space:nowrap;font-size:11px">${r[1]||'—'}</td>
+      <td style="font-weight:700;white-space:nowrap">${r[2]||'—'}</td>
+      <td>${r[3]||'—'}</td>
+      <td>${r[4]||'—'}</td>
+      <td>${r[5]||'—'}</td>
+      <td>${r[6]||'—'}</td>
+      <td>${r[7]||'—'}</td>
+      <td style="font-weight:700">${r[8]||'—'}</td>
+      <td>${r[9]||'—'}</td>
+      <td>${r[10]||'—'}</td>
+      <td style="max-width:160px;white-space:normal;font-size:11px">${r[11]||'—'}</td>
+      <td style="white-space:nowrap;font-size:11px">${r[12]||'—'}</td>
+      <td style="white-space:nowrap;font-size:11px">${r[13]||'—'}</td>
+      <td class="${dtClass}">${dt>0?dt+' jam':'—'}${dt>8?' ⚠️':''}</td>
+      <td>${partBadge(r[15])}</td>
+      <td>${r[16]||'—'}</td>
+      <td>${r[17]||'—'}</td>
+      <td>${fotoLink(r[18],'SN')}</td>
+    </tr>`;
+  }).join('');
+  renderPagination();
+}
+
+function renderPagination(){
+  const total=Math.ceil(filtered.length/PER_PAGE);
+  const bar=document.getElementById('paginationBar');
+  if(total<=1){bar.innerHTML='';return;}
+  let html=`<span>${filtered.length} tiket · Hal ${curPage}/${total}</span>`;
+  html+=`<button class="pg-btn" onclick="goPage(${curPage-1})" ${curPage===1?'disabled':''}>‹</button>`;
+  for(let p=Math.max(1,curPage-2);p<=Math.min(total,curPage+2);p++){
+    html+=`<button class="pg-btn ${p===curPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
+  }
+  html+=`<button class="pg-btn" onclick="goPage(${curPage+1})" ${curPage===total?'disabled':''}>›</button>`;
+  bar.innerHTML=html;
+}
+function goPage(p){if(p<1||p>Math.ceil(filtered.length/PER_PAGE))return;curPage=p;renderTable();}
+
+function exportCSV(){
+  if(!filtered.length){alert('Tidak ada data untuk di-export');return;}
+  const headers=["No","Timestamp","No Tiket","Pelanggan","Cabang","Wilayah","Kota","Tipe","SN Mesin","Teknisi","PIC","Problem","Open","Solved","Downtime(jam)","Sparepart","Nama Part","Qty","URL Foto SN"];
+  const rows=[headers,...filtered.map((r,i)=>[i+1,...r.slice(1)])];
+  const csv=rows.map(r=>r.map(v=>'"'+(v||'').toString().replace(/"/g,'""')+'"').join(',')).join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='CM_Hitachi_'+new Date().toISOString().split('T')[0]+'.csv';a.click();
+}
+</script>
+</body>
+</html>
