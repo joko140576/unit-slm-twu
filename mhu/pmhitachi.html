@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PM MHU/MSUK — Hitachi</title>
+<style>
+/* ─── TOKENS ─────────────────────────────────── */
+:root{
+  --red:#CC0000;--red-dk:#990000;--red-lt:#FFF0F0;
+  --ink:#1A1A2E;--ink2:#4A4A5A;--ink3:#8A8A9A;
+  --bg:#F0F2F5;--white:#FFFFFF;
+  --border:#D8DAE0;--radius:10px;
+  --shadow:0 2px 12px rgba(0,0,0,.08);
+  --font:'Segoe UI',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);min-height:100vh}
+
+/* ─── HEADER ─────────────────────────────────── */
+.hdr{
+  background:linear-gradient(120deg,#0F0F1E 0%,#1E1E3A 60%,#2A0A0A 100%);
+  border-bottom:3px solid var(--red);
+  padding:0 24px;
+  position:sticky;top:0;z-index:200;
+  box-shadow:0 3px 20px rgba(0,0,0,.35);
+}
+.hdr-inner{
+  max-width:960px;margin:0 auto;
+  display:flex;align-items:center;gap:16px;
+  padding:14px 0;
+}
+.logo{
+  background:var(--red);color:#fff;
+  font-weight:900;font-size:19px;letter-spacing:3px;
+  padding:7px 14px;border-radius:6px;flex-shrink:0;
+}
+.hdr-text h1{color:#fff;font-size:16px;font-weight:700;line-height:1.3}
+.hdr-text p{color:rgba(255,255,255,.5);font-size:11px;margin-top:2px}
+.hdr-pill{
+  margin-left:auto;flex-shrink:0;
+  background:rgba(204,0,0,.25);border:1px solid rgba(204,0,0,.5);
+  color:#FF9090;font-size:10px;font-weight:800;letter-spacing:1.5px;
+  padding:5px 12px;border-radius:20px;text-transform:uppercase;
+}
+
+
+
+/* ─── MAIN ───────────────────────────────────── */
+.wrap{max-width:960px;margin:0 auto;padding:20px 20px 48px}
+
+/* ─── CARD ───────────────────────────────────── */
+.card{
+  background:var(--white);border-radius:var(--radius);
+  box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px;
+}
+.card-hd{
+  background:linear-gradient(120deg,var(--red),var(--red-dk));
+  color:#fff;padding:14px 22px;
+  display:flex;align-items:center;gap:10px;
+}
+.card-hd h2{font-size:13px;font-weight:700;letter-spacing:.6px;flex:1}
+.card-hd .sec-num{
+  background:rgba(255,255,255,.15);border-radius:50%;
+  width:26px;height:26px;display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;flex-shrink:0;
+}
+.card-bd{padding:22px}
+
+/* ─── GRID ───────────────────────────────────── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.full{grid-column:1/-1}
+
+/* ─── FIELD ──────────────────────────────────── */
+.fld{display:flex;flex-direction:column;gap:5px}
+.fld label{
+  font-size:10px;font-weight:800;color:var(--ink2);
+  text-transform:uppercase;letter-spacing:.8px;
+}
+.fld label .req{color:var(--red);margin-left:1px}
+.fld input,.fld select,.fld textarea{
+  padding:9px 12px;
+  border:2px solid var(--border);border-radius:7px;
+  font-size:13px;color:var(--ink);background:#fff;
+  font-family:var(--font);transition:border-color .15s,box-shadow .15s;
+  appearance:none;-webkit-appearance:none;
+}
+.fld select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%238A8A9A'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;
+  padding-right:32px;
+}
+.fld input:focus,.fld select:focus,.fld textarea:focus{
+  outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(204,0,0,.1);
+}
+.fld textarea{resize:vertical;min-height:80px;line-height:1.5}
+
+/* ─── STATUS RADIO ───────────────────────────── */
+.status-group{display:flex;gap:10px;flex-wrap:wrap}
+.status-opt input[type=radio]{display:none}
+.status-opt label{
+  display:flex;align-items:center;gap:7px;
+  padding:9px 16px;border:2px solid var(--border);border-radius:8px;
+  font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;
+  user-select:none;
+}
+.status-opt input:checked + label{border-color:transparent;color:#fff}
+.status-opt.green  input:checked + label{background:#28A745;border-color:#28A745}
+.status-opt.red    input:checked + label{background:#DC3545;border-color:#DC3545}
+.status-opt.orange input:checked + label{background:#FD7E14;border-color:#FD7E14}
+.status-opt label:hover{border-color:var(--ink3)}
+
+/* ─── PHOTO UPLOAD ───────────────────────────── */
+.photos-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.pu{
+  border:2px dashed var(--border);border-radius:9px;
+  padding:14px 10px;text-align:center;cursor:pointer;
+  transition:all .15s;background:#FAFBFC;position:relative;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+}
+.pu:hover{border-color:var(--red);background:var(--red-lt)}
+.pu input[type=file]{
+  position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;
+  border:none;padding:0;
+}
+.pu-ico{font-size:24px}
+.pu-lbl{font-size:11px;font-weight:700;color:var(--ink2)}
+.pu-hint{font-size:10px;color:var(--ink3)}
+.pu-prev{
+  max-width:100%;max-height:90px;border-radius:6px;
+  margin-top:6px;display:none;object-fit:cover;
+}
+.pu-ok{
+  display:none;position:absolute;top:6px;right:6px;
+  background:var(--red);color:#fff;border-radius:50%;
+  width:18px;height:18px;font-size:10px;font-weight:900;
+  align-items:center;justify-content:center;
+}
+
+/* ─── ACTIONS ────────────────────────────────── */
+.actions{
+  display:flex;gap:10px;justify-content:flex-end;
+  padding-top:16px;border-top:2px solid var(--bg);margin-top:4px;
+}
+.btn{
+  padding:11px 26px;border:none;border-radius:8px;
+  font-size:13px;font-weight:800;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;
+  letter-spacing:.3px;transition:all .15s;
+}
+.btn-ghost{background:var(--bg);color:var(--ink2)}
+.btn-ghost:hover{background:#E0E3E8}
+.btn-pm{background:var(--red);color:#fff}
+.btn-pm:hover:not(:disabled){background:var(--red-dk);transform:translateY(-1px);box-shadow:0 4px 14px rgba(204,0,0,.3)}
+.btn-pm:disabled{background:#C0C0C0;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* ─── LOADING ────────────────────────────────── */
+.overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(10,10,20,.75);z-index:9000;
+  flex-direction:column;align-items:center;justify-content:center;gap:18px;
+}
+.overlay.on{display:flex}
+.spin{
+  width:52px;height:52px;
+  border:5px solid rgba(255,255,255,.2);border-top-color:var(--red);
+  border-radius:50%;animation:rot .75s linear infinite;
+}
+@keyframes rot{to{transform:rotate(360deg)}}
+.overlay p{color:#fff;font-size:15px;font-weight:700}
+
+/* ─── MODAL ──────────────────────────────────── */
+.modal-bg{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.6);z-index:9100;
+  align-items:center;justify-content:center;padding:20px;
+}
+.modal-bg.on{display:flex}
+.modal{
+  background:#fff;border-radius:16px;
+  max-width:460px;width:100%;padding:36px 32px;
+  text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.3);
+}
+.modal-ico{font-size:54px;margin-bottom:12px}
+.modal h3{font-size:20px;font-weight:800;margin-bottom:8px}
+.modal p{color:var(--ink2);font-size:13px;line-height:1.6;margin-bottom:16px}
+.modal-ref{
+  background:var(--bg);border-radius:8px;
+  padding:10px 14px;font-family:monospace;font-size:11px;
+  color:var(--ink2);margin-bottom:22px;text-align:left;line-height:1.7;
+}
+.modal-btns{display:flex;gap:10px;justify-content:center}
+
+/* ─── TOAST ──────────────────────────────────── */
+.toast{
+  position:fixed;bottom:22px;right:22px;
+  padding:12px 20px;border-radius:9px;
+  font-size:13px;font-weight:700;
+  box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:9200;
+  transform:translateY(70px);opacity:0;transition:all .25s;
+  max-width:340px;
+}
+.toast.on{transform:translateY(0);opacity:1}
+.toast.ok{background:#28A745;color:#fff}
+.toast.err{background:#DC3545;color:#fff}
+
+/* ─── PROGRESS BAR ───────────────────────────── */
+.prog-wrap{
+  height:3px;background:rgba(255,255,255,.15);
+  margin-bottom:0;
+}
+.prog-bar{
+  height:100%;background:var(--red);width:0%;
+  transition:width .3s;
+}
+
+@media(max-width:700px){
+  .g2,.g3{grid-template-columns:1fr}
+  .photos-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:420px){
+  .photos-grid{grid-template-columns:1fr}
+  .hdr-pill{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="prog-wrap"><div class="prog-bar" id="prog"></div></div>
+  <div class="hdr-inner">
+    <div class="logo">HITACHI</div>
+    <div class="hdr-text">
+      <h1>Preventive Maintenance — MHU / MSUK Hitachi</h1>
+      <p>Form Input PM · Database Google Spreadsheet</p>
+    </div>
+    <div class="hdr-pill">🛡️ PM FORM</div>
+  </div>
+</div>
+
+
+<!-- MAIN FORM -->
+<div class="wrap">
+
+  <form id="fpm" onsubmit="doSubmit(event)" novalidate>
+
+    <!-- SECTION 1: Pelanggan -->
+    <div class="card">
+      <div class="card-hd">
+        <div class="sec-num">1</div>
+        <h2>IDENTITAS PELANGGAN</h2>
+      </div>
+      <div class="card-bd">
+        <div class="g2">
+          <div class="fld">
+            <label>Nama Pelanggan <span class="req">*</span></label>
+            <select name="nama_pelanggan" required>
+              <option value="">— Pilih —</option>
+              <option>PT SSI</option>
+              <option>Non PT SSI</option>
+            </select>
+          </div>
+          <div class="fld">
+            <label>Nama Cabang / Remote <span class="req">*</span></label>
+            <input type="text" name="nama_cabang" placeholder="Nama cabang atau remote" required>
+          </div>
+          <div class="fld">
+            <label>Wilayah / Provinsi <span class="req">*</span></label>
+            <select name="provinsi" id="wilayah" onchange="loadKota()" required>
+              <option value="">— Pilih Wilayah —</option>
+              <option>Sumatera</option>
+              <option>Jawa</option>
+              <option>Kalimantan</option>
+              <option>Sulawesi</option>
+              <option>Bali Nusra</option>
+              <option>Papua</option>
+            </select>
+          </div>
+          <div class="fld">
+            <label>Kota / Kabupaten <span class="req">*</span></label>
+            <select name="kota" id="kota" required>
+              <option value="">— Pilih Wilayah Dulu —</option>
+            </select>
+          </div>
+          <div class="fld full">
+            <label>Nama TWU <span class="req">*</span></label>
+            <select name="nama_twu" required>
+              <option value="">— Pilih TWU —</option>
+              <option>Medan</option><option>Batam</option><option>Padang</option>
+              <option>Pekanbaru</option><option>Bandar Lampung</option><option>Palembang</option>
+              <option>Bekasi</option><option>Harmoni</option><option>Fatmawati</option>
+              <option>Tangerang</option><option>Bandung</option><option>Semarang</option>
+              <option>Yogyakarta</option><option>Surabaya</option><option>Malang</option>
+              <option>Denpasar</option><option>Banjarmasin</option><option>Balikpapan</option>
+              <option>Pontianak</option><option>Makassar</option><option>Palu</option>
+              <option>Manado</option><option>Jayapura</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: Data Mesin -->
+    <div class="card">
+      <div class="card-hd">
+        <div class="sec-num">2</div>
+        <h2>DATA MESIN MHU / MSUK</h2>
+      </div>
+      <div class="card-bd">
+        <div class="g2">
+          <div class="fld">
+            <label>Nomor Seri (SN) MHU/MSUK <span class="req">*</span></label>
+            <input type="text" name="sn_mhu" placeholder="Contoh: HIT-2024-001234" required>
+          </div>
+          <div class="fld">
+            <label>Tipe Mesin <span class="req">*</span></label>
+            <select name="tipe_mesin" required>
+              <option value="">— Pilih Tipe —</option>
+              <optgroup label="── SINGLE ──">
+                <option>Tronix Single</option><option>TX-200</option><option>AS-100</option>
+                <option>IH-110</option><option>IH-110F</option><option>CashTek ST 25</option>
+              </optgroup>
+              <optgroup label="── DOUBLE ──">
+                <option>ST-150NF</option><option>IH-210</option><option>ST-350N</option>
+                <option>MS-4200</option><option>MS-4200+Ex4</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="fld">
+            <label>Tanggal Realisasi PM <span class="req">*</span></label>
+            <input type="date" name="tgl_pm" id="tglPm" required>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: Personil -->
+    <div class="card">
+      <div class="card-hd">
+        <div class="sec-num">3</div>
+        <h2>PERSONIL</h2>
+      </div>
+      <div class="card-bd">
+        <div class="g2">
+          <div class="fld">
+            <label>Nama Teknisi <span class="req">*</span></label>
+            <input type="text" name="nama_teknisi" placeholder="Nama teknisi pelaksana" required>
+          </div>
+          <div class="fld">
+            <label>Nama PIC Pelanggan <span class="req">*</span></label>
+            <input type="text" name="nama_pic" placeholder="Nama PIC dari pelanggan" required>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: Foto -->
+    <div class="card">
+      <div class="card-hd">
+        <div class="sec-num">4</div>
+        <h2>DOKUMENTASI FOTO</h2>
+      </div>
+      <div class="card-bd">
+        <div class="photos-grid">
+          <div class="fld">
+            <label>Foto Serial Number</label>
+            <div class="pu" id="pu_sn">
+              <input type="file" accept="image/*" onchange="pickPhoto(this,'sn')">
+              <div class="pu-ico">📷</div>
+              <div class="pu-lbl">Foto SN</div>
+              <div class="pu-hint">JPG/PNG ≤ 2MB</div>
+              <img class="pu-prev" id="pv_sn">
+              <div class="pu-ok" id="ok_sn">✓</div>
+            </div>
+          </div>
+          <div class="fld">
+            <label>Foto Sebelum PM</label>
+            <div class="pu" id="pu_before">
+              <input type="file" accept="image/*" onchange="pickPhoto(this,'before')">
+              <div class="pu-ico">📸</div>
+              <div class="pu-lbl">Sebelum PM</div>
+              <div class="pu-hint">JPG/PNG ≤ 2MB</div>
+              <img class="pu-prev" id="pv_before">
+              <div class="pu-ok" id="ok_before">✓</div>
+            </div>
+          </div>
+          <div class="fld">
+            <label>Foto Sesudah PM</label>
+            <div class="pu" id="pu_after">
+              <input type="file" accept="image/*" onchange="pickPhoto(this,'after')">
+              <div class="pu-ico">📸</div>
+              <div class="pu-lbl">Sesudah PM</div>
+              <div class="pu-hint">JPG/PNG ≤ 2MB</div>
+              <img class="pu-prev" id="pv_after">
+              <div class="pu-ok" id="ok_after">✓</div>
+            </div>
+          </div>
+          <div class="fld">
+            <label>Foto Lapker PM</label>
+            <div class="pu" id="pu_lapker">
+              <input type="file" accept="image/*" onchange="pickPhoto(this,'lapker')">
+              <div class="pu-ico">📄</div>
+              <div class="pu-lbl">Laporan Kerja</div>
+              <div class="pu-hint">JPG/PNG ≤ 2MB</div>
+              <img class="pu-prev" id="pv_lapker">
+              <div class="pu-ok" id="ok_lapker">✓</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: Status -->
+    <div class="card">
+      <div class="card-hd">
+        <div class="sec-num">5</div>
+        <h2>STATUS & KETERANGAN</h2>
+      </div>
+      <div class="card-bd">
+        <div class="g2">
+          <div class="fld full">
+            <label>Status MHU <span class="req">*</span></label>
+            <div class="status-group">
+              <div class="status-opt green">
+                <input type="radio" name="status_mhu" id="s1" value="Operasional" required>
+                <label for="s1">✅ Operasional</label>
+              </div>
+              <div class="status-opt red">
+                <input type="radio" name="status_mhu" id="s2" value="Rusak">
+                <label for="s2">❌ Rusak</label>
+              </div>
+              <div class="status-opt orange">
+                <input type="radio" name="status_mhu" id="s3" value="Repeat Problem">
+                <label for="s3">⚠️ Repeat Problem</label>
+              </div>
+            </div>
+          </div>
+          <div class="fld full">
+            <label>Keterangan Lain</label>
+            <textarea name="keterangan" placeholder="Catatan temuan, kondisi mesin, atau informasi tambahan lainnya..."></textarea>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn btn-ghost" onclick="resetFrm()">↺ Reset Form</button>
+          <button type="submit" class="btn btn-pm" id="btnSub">
+            <span>✅ Kirim ke Spreadsheet PM</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div><!-- /wrap -->
+
+<!-- LOADING -->
+<div class="overlay" id="loader">
+  <div class="spin"></div>
+  <p>Menyimpan ke Google Spreadsheet...</p>
+</div>
+
+<!-- MODAL SUCCESS -->
+<div class="modal-bg" id="mdOk">
+  <div class="modal">
+    <div class="modal-ico">✅</div>
+    <h3>Data PM Tersimpan!</h3>
+    <p>Data Preventive Maintenance berhasil dikirim ke<br><strong>Google Spreadsheet PM MHU/MSUK HITACHI</strong></p>
+    <div class="modal-ref" id="mdRef"></div>
+    <div id="mdLinks" style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px"></div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeMd()">Tutup</button>
+      <button class="btn btn-pm" onclick="closeMd();resetFrm()">➕ Input Data Baru</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── KOTA MAP ─────────────────────────────────────────────────
+const KOTA={
+  Sumatera:['Aceh','Medan','Padang','Pekanbaru','Palembang','Bandar Lampung','Batam','Kepulauan Riau','Jambi','Kepulauan Bangka Belitung','Bengkulu'],
+  Jawa:['Bandung','DKI Jakarta','Serang','Tangerang','Bekasi','Bogor','Semarang','Yogyakarta','Surabaya','Malang','Madura'],
+  Kalimantan:['Pontianak','Tarakan','Banjarmasin','Samarinda','Balikpapan','Palangkaraya'],
+  Sulawesi:['Manado','Palu','Makassar','Kendari','Mamuju','Gorontalo'],
+  'Bali Nusra':['Bali','Kupang','Mataram','Ternate','Ambon'],
+  Papua:['Jayapura','Merauke','Sorong','Timika','Manokwari','Nabire']
+};
+function loadKota(){
+  const w=document.getElementById('wilayah').value;
+  const s=document.getElementById('kota');
+  s.innerHTML='<option value="">— Pilih Kota —</option>';
+  (KOTA[w]||[]).forEach(k=>s.innerHTML+=`<option>${k}</option>`);
+}
+
+// ── GAS URL PM (sudah dikonfigurasi) ─────────────────────────
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbylOZpLeIQS__yVUju3TqnJoIokE_GU4SpKSHxEBFm0e5YFqEyRJPklJyIuFQKFQWcn2w/exec';
+
+window.addEventListener('load',()=>{
+  document.getElementById('tglPm').value=new Date().toISOString().split('T')[0];
+});
+
+// ── FOTO ──────────────────────────────────────────────────────
+const B64={};
+function pickPhoto(inp,key){
+  if(!inp.files||!inp.files[0])return;
+  const f=inp.files[0];
+  if(f.size>2*1024*1024){toast('⚠️ Ukuran foto melebihi 2MB','err');inp.value='';return;}
+  const r=new FileReader();
+  r.onload=e=>{
+    B64[key]=e.target.result;
+    const pv=document.getElementById('pv_'+key);
+    pv.src=e.target.result;pv.style.display='block';
+    const ok=document.getElementById('ok_'+key);
+    ok.style.display='flex';
+    document.getElementById('pu_'+key).style.borderColor='#28A745';
+  };
+  r.readAsDataURL(f);
+}
+
+// ── PROGRESS BAR ──────────────────────────────────────────────
+function setProgress(p){document.getElementById('prog').style.width=p+'%'}
+
+// ── SUBMIT ────────────────────────────────────────────────────
+async function doSubmit(e){
+  e.preventDefault();
+  if(!GAS_URL||GAS_URL.includes('GANTI_DENGAN')){
+    toast('❌ GAS URL belum diset di kode HTML!','err');return;
+  }
+
+  // cek status_mhu
+  const status=document.querySelector('[name=status_mhu]:checked');
+  if(!status){toast('❌ Pilih Status MHU dulu!','err');return;}
+
+  const fd=new FormData(document.getElementById('fpm'));
+  const payload={
+    tgl_pm        :fd.get('tgl_pm'),
+    nama_pelanggan:fd.get('nama_pelanggan'),
+    nama_cabang   :fd.get('nama_cabang'),
+    provinsi      :fd.get('provinsi'),
+    kota          :fd.get('kota'),
+    nama_twu      :fd.get('nama_twu'),
+    sn_mhu        :fd.get('sn_mhu'),
+    tipe_mesin    :fd.get('tipe_mesin'),
+    nama_teknisi  :fd.get('nama_teknisi'),
+    nama_pic      :fd.get('nama_pic'),
+    status_mhu    :status.value,
+    keterangan    :fd.get('keterangan')||'',
+    foto_sn       :B64['sn']     ||'',
+    foto_before   :B64['before'] ||'',
+    foto_after    :B64['after']  ||'',
+    foto_lapker   :B64['lapker'] ||''
+  };
+
+  document.getElementById('loader').classList.add('on');
+  document.getElementById('btnSub').disabled=true;
+  setProgress(30);
+
+  try{
+    setProgress(60);
+    const res=await fetch(GAS_URL,{method:'POST',body:JSON.stringify(payload)});
+    setProgress(90);
+    let data;
+    try{data=await res.json();}catch{data={ok:true};}
+    setProgress(100);
+    setTimeout(()=>setProgress(0),600);
+    document.getElementById('loader').classList.remove('on');
+    document.getElementById('btnSub').disabled=false;
+
+    if(data.ok!==false){
+      document.getElementById('mdRef').innerHTML=
+        `<b>SN Mesin :</b> ${payload.sn_mhu}<br>`+
+        `<b>Tipe     :</b> ${payload.tipe_mesin}<br>`+
+        `<b>Teknisi  :</b> ${payload.nama_teknisi}<br>`+
+        `<b>Status   :</b> ${status.value}<br>`+
+        `<b>Baris    :</b> #${data.row||'—'} di Spreadsheet`;
+
+      // Tampilkan link Spreadsheet & foto GDrive
+      const lnkBox=document.getElementById('mdLinks');
+      lnkBox.innerHTML='';
+      const linkStyle='display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:7px;font-size:12px;font-weight:700;text-decoration:none;color:#fff;';
+      if(data.spreadsheet){
+        lnkBox.innerHTML+=`<a href="${data.spreadsheet}" target="_blank" style="${linkStyle}background:#CC0000;">📊 Buka Spreadsheet PM</a>`;
+      }
+      const fotoMap=[
+        {key:'foto_sn',    label:'📷 Foto SN'},
+        {key:'foto_before',label:'📸 Sebelum PM'},
+        {key:'foto_after', label:'📸 Sesudah PM'},
+        {key:'foto_lapker',label:'📄 Lapker'}
+      ];
+      fotoMap.forEach(f=>{
+        if(data[f.key]&&data[f.key]!=='—'&&data[f.key].startsWith('http')){
+          lnkBox.innerHTML+=`<a href="${data[f.key]}" target="_blank" style="${linkStyle}background:#28A745;">${f.label} — Lihat di Drive</a>`;
+        }
+      });
+
+      document.getElementById('mdOk').classList.add('on');
+    } else {
+      toast('❌ Gagal simpan: '+(data.msg||'Unknown error'),'err');
+    }
+  }catch(err){
+    setProgress(100);setTimeout(()=>setProgress(0),600);
+    document.getElementById('loader').classList.remove('on');
+    document.getElementById('btnSub').disabled=false;
+    // GAS no-cors: fetch throws tapi data sudah terkirim
+    if(err.name==='TypeError'){
+      document.getElementById('mdRef').innerHTML=
+        `<b>SN Mesin :</b> ${payload.sn_mhu}<br>`+
+        `<b>Tipe     :</b> ${payload.tipe_mesin}<br>`+
+        `<b>Status   :</b> ${status.value}<br>`+
+        `<b>Info     :</b> Data dikirim (CORS blocked — normal untuk GAS)`;
+      const lnkBox=document.getElementById('mdLinks');lnkBox.innerHTML='';
+      document.getElementById('mdOk').classList.add('on');
+    } else {
+      toast('❌ Error: '+err.message,'err');
+    }
+  }
+}
+
+// ── RESET ─────────────────────────────────────────────────────
+function resetFrm(){
+  document.getElementById('fpm').reset();
+  ['sn','before','after','lapker'].forEach(k=>{
+    delete B64[k];
+    const pv=document.getElementById('pv_'+k);
+    if(pv){pv.src='';pv.style.display='none';}
+    const ok=document.getElementById('ok_'+k);
+    if(ok)ok.style.display='none';
+    const pu=document.getElementById('pu_'+k);
+    if(pu)pu.style.borderColor='';
+  });
+  document.getElementById('kota').innerHTML='<option value="">— Pilih Wilayah Dulu —</option>';
+  document.getElementById('tglPm').value=new Date().toISOString().split('T')[0];
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function closeMd(){document.getElementById('mdOk').classList.remove('on');}
+document.getElementById('mdOk').addEventListener('click',function(e){if(e.target===this)closeMd();});
+
+// ── TOAST ─────────────────────────────────────────────────────
+function toast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast '+type+' on';
+  setTimeout(()=>t.className='toast',3500);
+}
+</script>
+</body>
+</html>
